@@ -34,7 +34,11 @@ const Container = () => {
 
   const { cid } = router.query
 
+
     useEffect( () => {
+        // no need to write getContainers then call it, just make the callback for useeffect async like 
+        // async ()=>{
+            // then use await and write the whole thing in here
         if(router.isReady && status === "authenticated") {
         async function getContainers(){
             console.log("Router is " + router.asPath)
@@ -54,6 +58,9 @@ const Container = () => {
     },[router.isReady])
 // TODO: Add validation for user ID
   if (status === "authenticated") {
+    // this thing might shit if the status isn't defined 
+    // react sometimes gets mad if a component does not return anything (next may be different)
+    // usually you'd do it like status !='thing' return <Loading>
     if (isLoading) return <p>Loading...</p>
     if (!data) return <p>No profile data</p>
       console.log(data)
@@ -65,6 +72,9 @@ const Container = () => {
         <h1>Your Containers for Account: {router.query.accountid}</h1>
         <ul>
                     {data.containers.length > 0 ? data.containers.map((container) => 
+                        // unless data is changing all the time, i wouldn't suggest putting a loop like this right inside a short if
+                        // its not a big deal here, its not a lot of code, but running this on each render is a bit much
+                        // better to make some element that holds this value, then conditionally show that element or dont
                     <li key={container.container_id}>
                         <Link href={`/account/${encodeURIComponent(router.query.accountid)}/container/${encodeURIComponent(container.container_id)}`}>
                         <a>{ container.container_name} </a>
